@@ -1,0 +1,46 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Auto;
+import com.qualcomm.robotcore.hardware.Servo;
+
+public class ServoPositionHelper extends Auto {
+
+    // Declare OpMode member.
+    private Servo servo = null;
+
+   
+     * Create a variable which we will modify with our code. Eventually we will instruct
+     * the servo to run to the position captured by this variable.
+    
+    private double servoPosition = 0.5;
+
+    // Create a variable for size of each "step" that we will increment or decrement our servo position by.
+    private double positionAdjustment = 0.05;
+
+    // This variable captures how much we need to increment or decrement the step size by
+    private final double STEP_ADJUSTMENT = 0.01;
+
+    //Limits
+    private final double MIN_POSITION = 0;
+    private final double MAX_POSITION = 1;
+
+
+public void automode() {
+  telemetry.addData("Status", "Initialized");
+  telemetry.addData("StartPOS", "relativePOS);
+  servo = hardwareMap.get(Servo.class, "servo");
+
+    servoPosition = 0.5;
+    servo.setPosition(servoPosition);
+
+
+    telemetry.addData("Servo Set Position: ",servo.getPosition());
+    telemetry.update();
+
+        // Wait for the game to start (driver presses START)
+        waitForStart();
+
+}
