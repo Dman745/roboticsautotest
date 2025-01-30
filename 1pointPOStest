@@ -1,0 +1,24 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Auto;
+import com.qualcomm.robotcore.hardware.Servo;
+
+public class POSTrack extends Auto {
+  private int CenterX = 0;
+  private int CenterY = 0;
+ 
+}
+
+Public void runOpMode() {
+  
+  while (opModeIsActive()) {
+     telemetry.addData("GlobalSTx", "GlobalSTy");
+     telemetry.update();
+     console.log((CenterX -= "GlobalSTx"));
+     console.log((CenterY -= "GlobalSTy"));
+  }
+
+}
