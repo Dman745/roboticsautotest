@@ -1,24 +1,44 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Auto;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class POSTrack extends Auto {
+    DcMotor motorLeft;
+    DcMotor motorRight;
+    DcMotor frontLeft;
+    DcMotor frontRight;
+    ColorSensor color1;
+    DistanceSensor distance1;
+    BNO055IMU imu;
+
+@Override
+    public void runOpMode() {
+      motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
+      motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+      frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+      frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+      color1 = hardwareMap.get(ColorSensor.class, "color1");
+      distance1 = hardwareMap.get(DistanceSensor.class, "distance1");
+      imu = hardwareMap.get(BNO055IMU.class, "imu");
+      // Put initialization blocks here
+      motorLeft.setPower(-1);
+      motorRight.setPower(1);
+      waitForStart();
+
+  public class POSTrack extends Auto {
   private int CenterX = 0;
   private int CenterY = 0;
- 
-}
 
-Public void runOpMode() {
-  
-  while (opModeIsActive()) {
+   while (opModeIsActive()) {
      telemetry.addData("GlobalSTx", "GlobalSTy");
      telemetry.update();
      console.log((CenterX -= "GlobalSTx"));
      console.log((CenterY -= "GlobalSTy"));
-  }
+ 
+}
+
+
 
 }
