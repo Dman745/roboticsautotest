@@ -1,0 +1,90 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.BNO055IMU;
+
+@TeleOp(name = "MoveToCoordinates", group = "Linear Opmode")
+public class MoveToCoordinates extends LinearOpMode {
+
+    private DcMotor motorLeft;
+    private DcMotor motorRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private BNO055IMU imu;
+
+    // Target coordinates (these should be in a unit like inches or encoder counts)
+    private double targetX = 100;  // Example target X position (in encoder ticks or inches)
+    private double targetY = 100;  // Example target Y position (in encoder ticks or inches)
+
+    // Current position (these would normally come from sensors or encoders)
+    private double currentX = 0;
+    private double currentY = 0;
+
+    private double Kp = 0.1; // Proportional gain for simplicity
+
+    @Override
+    public void runOpMode() {
+        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
+        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        // Initialize IMU
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        imu.initialize(parameters);
+
+        // Wait for the start of the op mode
+        waitForStart();
+
+        // Loop to move towards the target coordinates
+        while (opModeIsActive()) {
+            // Calculate the distance to the target
+            double deltaX = targetX - currentX;
+            double deltaY = targetY - currentY;
+            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);  // Euclidean distance
+            double angleToTarget = Math.atan2(deltaY, deltaX);  // Calculate the angle to the target
+
+            // Get the current robot orientation (IMU angle)
+            float currentAngle = imu.getAngularOrientation().firstAngle;  // Get the current heading
+
+            // Calculate the angle error
+            double angleError = angleToTarget - currentAngle;
+
+            // Proportional control for angle correction (heading adjustment)
+            double headingCorrection = angleError * Kp;
+
+            // Proportional control for forward movement
+            double forwardPower = distance * Kp; // Forward power is proportional to distance
+
+            // Calculate motor power (to control the robot's movement)
+            double leftPower = forwardPower - headingCorrection;
+            double rightPower = forwardPower + headingCorrection;
+
+            // Clamp the motor power values to the range [-1, 1]
+            motorLeft.setPower(Math.max(-1, Math.min(1, leftPower)));
+            motorRight.setPower(Math.max(-1, Math.min(1, rightPower)));
+
+            // For simplicity, update the current position based on distance and direction
+            // In a real setup, this would be tracked using encoders
+            currentX += deltaX * 0.1;  // Update current position in X direction
+            currentY += deltaY * 0.1;  // Update current position in Y direction
+
+            // Display telemetry for debugging
+            telemetry.addData("CurrentX", currentX);
+            telemetry.addData("CurrentY", currentY);
+            telemetry.addData("TargetX", targetX);
+            telemetry.addData("TargetY", targetY);
+            telemetry.addData("Distance", distance);
+            telemetry.update();
+
+            // Stop when the robot is close enough to the target
+            if (distance < 5) {  // If within 5 units of the target, stop
+                motorLeft.setPower(0);
+                motorRight.setPower(0);
+                break;
+            }
+        }
+    }
+}
